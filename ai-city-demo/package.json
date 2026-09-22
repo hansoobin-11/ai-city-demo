@@ -1,0 +1,18 @@
+{
+  "name": "ai-city-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SPACEBANK AI CITY 전시용 오프라인 터치 데모",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
+  }
+}
+

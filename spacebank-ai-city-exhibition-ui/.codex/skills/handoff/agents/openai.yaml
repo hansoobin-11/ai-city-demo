@@ -1,0 +1,7 @@
+interface:
+  display_name: "Handoff"
+  short_description: "검증된 상태를 다음 작업용 인수인계로 정리"
+  default_prompt: "Use $handoff to prepare a concise Korean handoff for the next task."
+policy:
+  allow_implicit_invocation: false
+

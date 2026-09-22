@@ -1,0 +1,446 @@
+/*
+ * 공통 상세 화면. 좌표·크기는 `데모 시연 초안.html`의 상세 레이아웃에서 옮겼다.
+ * 미디어 박스는 항상 빈 패널이다. 영상·소개 자료(PPT 캡처)는 버튼으로 열리는
+ * 전체화면 모달에서 따로 보여준다.
+ */
+
+.detail {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.scene[data-phase="detail"] .detail {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.4s ease 0.15s;
+}
+
+.detail__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    rgba(5, 8, 15, 0.92) 0%,
+    rgba(5, 8, 15, 0.8) 34%,
+    rgba(5, 8, 15, 0.25) 60%,
+    rgba(5, 8, 15, 0) 78%
+  );
+}
+
+.detail__vignette {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 400px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 8, 15, 0),
+    rgba(5, 8, 15, 0.6) 46%,
+    rgba(5, 8, 15, 0.88)
+  );
+}
+
+.detail__accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--sb-coral), #a83a0f);
+}
+
+/* ── 뒤로가기 · 로고 ──────────────────────────────── */
+.detail__back {
+  position: absolute;
+  left: 80px;
+  top: 56px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 28px 16px 22px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: rgba(5, 8, 15, 0.35);
+  color: var(--sb-text);
+  font: 600 22px/1 Pretendard, system-ui, sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.detail__back:hover,
+.detail__back:focus-visible {
+  border-color: var(--sb-coral);
+  background: rgba(230, 79, 61, 0.22);
+}
+
+.detail__back-arrow {
+  font: 700 22px/1 Pretendard, system-ui, sans-serif;
+}
+
+.detail__logo {
+  position: absolute;
+  right: 80px;
+  top: 58px;
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.65));
+}
+
+/* ── 미디어 영역 (좌, ~55%) ───────────────────────── */
+.detail__media {
+  position: absolute;
+  left: 80px;
+  top: 172px;
+  width: 1000px;
+  height: 772px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+  background: #0b111c;
+}
+
+/*
+ * 소개 자료(PPT 캡처) 스와이퍼. 미디어 모달 안에서만 쓰인다(기본 hidden).
+ * 회사 자체 디자인의 캡처 이미지라 상세 화면 디자인에 억지로 맞추지 않고
+ * 전체화면 모달로 분리해서 보여준다.
+ */
+.detail__swiper {
+  position: absolute;
+  inset: 0;
+}
+
+.detail__swiper[hidden] {
+  display: none;
+}
+
+.detail__swiper-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.detail__swiper-track:active {
+  cursor: grabbing;
+}
+
+.detail__swiper-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.detail__swiper-slide img {
+  width: 100%;
+  height: 100%;
+  /* 슬라이드는 문서 캡처라 잘리면 안 된다 — 레터박스를 감수하고 항상 전체를 보여준다. */
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.detail__swiper-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.detail__swiper-dots[hidden] {
+  display: none;
+}
+
+.detail__swiper-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.25s ease;
+}
+
+.detail__swiper-dot.is-active {
+  width: 26px;
+  background: var(--sb-coral);
+}
+
+/* 슬라이드가 어떤 화면인지 보여주는 라벨("○○ 화면 예시"). label 없으면 hidden. */
+.detail__swiper-label {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(5, 8, 15, 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--sb-text);
+  font: 700 16px/1 Pretendard, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  pointer-events: none;
+}
+
+.detail__swiper-label[hidden] {
+  display: none;
+}
+
+/* ── 미디어 모달 (영상 · 소개 자료 공용) ───────────────── */
+.detail__media-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail__media-modal[hidden] {
+  display: none;
+}
+
+.detail__media-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 15, 0.88);
+}
+
+.detail__media-modal-body {
+  position: relative;
+  width: 1400px;
+  max-width: 90%;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
+}
+
+.detail__media-modal-video-slot {
+  position: absolute;
+  inset: 0;
+}
+
+.detail__media-modal-video-slot[hidden] {
+  display: none;
+}
+
+.detail__media-modal-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.detail__media-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(5, 8, 15, 0.6);
+  color: var(--sb-text);
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 0.2s ease;
+}
+
+.detail__media-modal-close:hover,
+.detail__media-modal-close:focus-visible {
+  background: var(--sb-coral);
+}
+
+/* ── 콘텐츠 영역 (우, ~45%) ───────────────────────── */
+.detail__content {
+  position: absolute;
+  left: 1140px;
+  right: 80px;
+  top: 172px;
+  height: 772px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* space-between이 만드는 여백은 헤드라인·설명 줄바꿈 수에 따라 줄어들 수
+     있다. gap을 같이 주면 그 여백의 최솟값으로 동작해, 텍스트가 길어서
+     피처 목록과 버튼이 맞붙는 걸 막아준다. */
+  gap: 40px;
+}
+
+.detail__top {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.detail__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.detail__badge {
+  font: 800 18px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: 0.14em;
+  padding: 10px 15px;
+  background: var(--sb-coral);
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.detail__product {
+  font: 600 21px/1 Pretendard, system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.62);
+  letter-spacing: 0.02em;
+}
+
+.detail__eyebrow {
+  font: 600 23px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-coral-soft);
+  letter-spacing: -0.01em;
+}
+
+.detail__headline {
+  margin: 0;
+  font: 800 48px/1.22 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: -0.035em;
+  text-wrap: pretty;
+}
+
+.detail__description {
+  font: 400 21px/1.6 Pretendard, system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 데모 보기 · 홍보 영상 보기 버튼 줄. 둘 다 값이 있을 때만 각자 보인다. */
+.detail__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.detail__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--sb-coral);
+  color: var(--sb-text);
+  text-decoration: none;
+  font: 700 20px/1 Pretendard, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* [hidden]과 위 display 선언의 우선순위가 같아 hidden이 가려질 수 있어 명시적으로 못박는다. */
+.detail__cta[hidden] {
+  display: none;
+}
+
+.detail__cta:hover,
+.detail__cta:focus-visible {
+  background: var(--sb-coral-soft);
+}
+
+.detail__cta:active {
+  transform: scale(0.98);
+}
+
+/* 영상 버튼은 데모 버튼과 구분되도록 아웃라인 스타일을 쓴다. */
+.detail__cta--video {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: var(--sb-text);
+}
+
+.detail__cta--video:hover,
+.detail__cta--video:focus-visible {
+  background: rgba(230, 79, 61, 0.16);
+  border-color: var(--sb-coral);
+}
+
+.detail__cta-icon {
+  font-size: 18px;
+}
+
+/* ── 피처 3단 ─────────────────────────────────────── */
+.detail__features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail__feature {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 255, 255, 0.22);
+}
+
+.detail__feature:first-child {
+  border-top-color: rgba(230, 79, 61, 0.75);
+}
+
+.detail__feature-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.detail__feature-index {
+  font: 700 15px/1 ui-monospace, Menlo, monospace;
+  color: var(--sb-coral-soft);
+  letter-spacing: 0.16em;
+}
+
+.detail__feature-title {
+  font: 700 24px/1.25 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: -0.02em;
+}
+
+.detail__feature-body {
+  font: 400 18px/1.55 Pretendard, system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ── 안내 문구 ────────────────────────────────────── */
+.detail__hint {
+  position: absolute;
+  right: 80px;
+  bottom: 30px;
+  font: 500 22px/1 Pretendard, system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.66);
+}

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Retro"
+  short_description: "작업 방식과 규칙·검증 환경을 회고"
+  default_prompt: "Use $retro to review this session and propose environment improvements."
+policy:
+  allow_implicit_invocation: false
+

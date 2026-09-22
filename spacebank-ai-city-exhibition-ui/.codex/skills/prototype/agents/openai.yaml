@@ -1,0 +1,7 @@
+interface:
+  display_name: "Prototype"
+  short_description: "폐기 전제 로직·UI 프로토타입으로 질문 검증"
+  default_prompt: "Use $prototype to build a focused throwaway prototype for this question."
+policy:
+  allow_implicit_invocation: false
+

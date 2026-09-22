@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>SPACEBANK AI CITY — RIGHT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../shared/base.css?v=20260921-3">
+</head>
+<body>
+<div id="stage-scale">
+  <div id="screen-root"></div>
+</div>
+
+<script src="../../timeline/timeline.js?v=20260921-3"></script>
+<script src="../shared/city-scene.js?v=20260921-3"></script>
+<script src="../shared/fit-stage.js"></script>
+<script src="../shared/sync-channel.js"></script>
+<script src="../shared/dev-controls.js"></script>
+<script>
+  (function () {
+    var SCREEN_INDEX = 2; // RIGHT
+    var root = document.getElementById('screen-root');
+    var update = AICityScene.mount(root, SCREEN_INDEX, '../../../public/assets/');
+    var clock = new AICityTimeline.TimelineClock();
+    clock.subscribe(function (frame) { update(frame); });
+    var sync = AICitySync.create(clock);
+    AICityDevControls.mount(clock, { controls: sync });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>SPACEBANK AI CITY · 4면 동기 재생</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05080f;color:#fff;font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif}
+    body{display:grid;place-items:center;padding:48px}.wrap{width:min(980px,100%)}
+    .eyebrow{color:#f0846f;font-size:13px;font-weight:800;letter-spacing:.24em}.title{margin:14px 0 8px;font-size:42px;letter-spacing:-.04em}.desc{color:#9da5b4;line-height:1.7}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px}
+    .route{display:flex;align-items:center;justify-content:space-between;padding:24px;border:1px solid #242b38;border-radius:14px;background:#0b101a;color:#fff;font:inherit;cursor:pointer}
+    .route:hover{border-color:#e64f3d}.name{font-size:23px;font-weight:800}.monitor{color:#f0846f;font-size:13px;font-weight:800;letter-spacing:.12em}
+    .all{width:100%;margin-top:16px;padding:18px;border:1px solid #242b38;border-radius:12px;background:#0b101a;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+    .controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-top:28px}
+    .controls button{padding:18px;border:1px solid #242b38;border-radius:12px;background:#0b101a;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+    .controls .primary{background:#e64f3d;border-color:#e64f3d;font-size:17px;font-weight:800}
+    .status{margin-top:14px;color:#6f7888;font-size:13px}
+    .note{margin-top:18px;color:#6f7888;font-size:13px;line-height:1.7}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="eyebrow">SPACEBANK AI CITY</div>
+    <h1 class="title">4면 동기 재생</h1>
+    <div class="desc">네 화면이 정지 상태로 열립니다. 모니터에 배치한 뒤 이 창에서 동시에 재생하세요. 이 창은 닫지 마세요.</div>
+
+    <div class="grid">
+      <button class="route" data-screen="top"><span class="name">TOP</span><span class="monitor">MONITOR #4</span></button>
+      <button class="route" data-screen="left"><span class="name">LEFT</span><span class="monitor">MONITOR #2</span></button>
+      <button class="route" data-screen="center"><span class="name">CENTER</span><span class="monitor">MONITOR #1</span></button>
+      <button class="route" data-screen="right"><span class="name">RIGHT</span><span class="monitor">MONITOR #3</span></button>
+    </div>
+    <button class="all" id="openAll">4면 모두 열기 (정지 상태)</button>
+
+    <div class="controls">
+      <button class="primary" id="play">동시 재생</button>
+      <button id="pause">일시정지</button>
+      <button id="reset">처음으로</button>
+    </div>
+    <div class="status" id="status">화면을 먼저 여세요.</div>
+    <div class="note">각 창을 모니터로 옮기고 F11로 전체화면 → 이 창에서 동시 재생. 개별 창에서는 Space(재생) · P(일시정지) · R(처음으로).</div>
+  </main>
+
+  <script>
+    const source = './AI CITY 메인 인트로 (오프라인용 v4 · 수동재생).html';
+    const screens = ['top','left','center','right'];
+    const routeUrl = s => new URL(source + '?screen=' + s, location.href).href;
+    const windows = new Map();
+    const statusEl = document.getElementById('status');
+    let channel = null;
+    try { channel = new BroadcastChannel('aicity-sync'); } catch (e) {}
+
+    const openScreen = s => { const w = window.open(routeUrl(s), 'ai-city-' + s); if (w) windows.set(s, w); };
+
+    function send(message) {
+      windows.forEach((w, s) => { if (w.closed) windows.delete(s); else { try { w.postMessage(message, '*'); } catch (e) {} } });
+      try { if (channel) channel.postMessage(message); } catch (e) {}
+      try { localStorage.setItem('aicity-sync', JSON.stringify({ ...message, n: Math.random() })); } catch (e) {}
+    }
+
+    document.querySelectorAll('[data-screen]').forEach(b => b.addEventListener('click', () => {
+      openScreen(b.dataset.screen);
+      statusEl.textContent = '열린 화면 ' + windows.size + '개';
+    }));
+    document.getElementById('openAll').addEventListener('click', () => {
+      screens.forEach(openScreen);
+      statusEl.textContent = '열린 화면 ' + windows.size + '개';
+    });
+
+    document.getElementById('play').addEventListener('click', () => {
+      send({ type:'aicity:play', at: Date.now() + 2000 });
+      let left = 2;
+      statusEl.textContent = '동시 재생까지 ' + left + '초';
+      const t = setInterval(() => {
+        left -= 1;
+        statusEl.textContent = left > 0 ? '동시 재생까지 ' + left + '초' : '재생 중';
+        if (left <= 0) clearInterval(t);
+      }, 1000);
+    });
+    document.getElementById('pause').addEventListener('click', () => { send({ type:'aicity:pause' }); statusEl.textContent = '일시정지'; });
+    document.getElementById('reset').addEventListener('click', () => { send({ type:'aicity:reset' }); statusEl.textContent = '정지 상태'; });
+  </script>
+</body>
+</html>

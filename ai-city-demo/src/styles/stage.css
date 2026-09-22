@@ -1,0 +1,148 @@
+/*
+ * 1920x1080 고정 스테이지와 배경 4겹.
+ * 원본 데모의 `transform:scale(min(vw/1920, vh/1080))` 피팅을 옮긴 것이다.
+ */
+
+.stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  flex: none;
+  overflow: hidden;
+  transform: scale(var(--stage-scale, 1));
+  transform-origin: center center;
+}
+
+/* 배경 + 도시 + 상세를 한데 묶는 컨테이너. phase 전환의 기준점. */
+.scene {
+  position: absolute;
+  inset: 0;
+}
+
+.city {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* zoom·detail 단계에서는 도시 전경(로고·히어로·핫스폿)을 숨기고 입력을 끈다. */
+.scene[data-phase="zoom"] .city,
+.scene[data-phase="detail"] .city {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 복귀(zoomback) 시에는 화면이 다 줌아웃된 뒤에야 서서히 다시 보이게 한다. */
+.scene[data-phase="zoomback"] .city {
+  transition: opacity 0.5s ease 0.25s;
+}
+
+/* 배경 1: 단색 바닥 */
+.stage__base {
+  position: absolute;
+  inset: 0;
+  background: var(--sb-bg);
+}
+
+/* 배경 2: 도시 사진 (야간 필터 고정) */
+.stage__photo {
+  position: absolute;
+  inset: 0;
+  background-image: url("/assets/city.png");
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.02);
+  transform-origin: 50% 52%;
+  filter: brightness(var(--sb-night-bright)) saturate(var(--sb-night-sat))
+    contrast(var(--sb-night-contrast));
+  transition: transform 0.85s cubic-bezier(0.42, 0, 0.22, 1);
+}
+
+/* zoom·detail 단계: 상세로 진입한 영역이 화면 왼쪽에 자리 잡도록 확대. */
+.scene[data-phase="zoom"] .stage__photo,
+.scene[data-phase="detail"] .stage__photo {
+  transform: scale(2.55);
+  transform-origin: 18% 53%;
+}
+
+/* 배경 3: 시간대 틴트 */
+.stage__tint {
+  position: absolute;
+  inset: 0;
+  background: var(--sb-night-tint);
+  mix-blend-mode: screen;
+}
+
+/* 배경 4: 상하 비네트 */
+.stage__vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 8, 15, 0.82) 0%,
+    rgba(5, 8, 15, 0.22) 30%,
+    rgba(5, 8, 15, 0.06) 52%,
+    rgba(5, 8, 15, 0.55) 82%,
+    rgba(5, 8, 15, 0.88) 100%
+  );
+}
+
+/* 배경 5: 전체 디밍 */
+.stage__dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 15, 0.9);
+  opacity: 0.24;
+}
+
+/* 도시 조명 + 데이터 네트워크 SVG */
+.city-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scale(1.02);
+  transform-origin: 50% 52%;
+  transition: transform 0.85s cubic-bezier(0.42, 0, 0.22, 1), opacity 0.4s ease;
+}
+
+.scene[data-phase="zoom"] .city-overlay,
+.scene[data-phase="detail"] .city-overlay {
+  opacity: 0;
+  transform: scale(2.55);
+  transform-origin: 18% 53%;
+}
+
+/* 좌측 텍스트 가독성용 스크림 */
+.city__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(5, 8, 15, 0.9) 0%,
+    rgba(5, 8, 15, 0.6) 26%,
+    rgba(5, 8, 15, 0.16) 46%,
+    rgba(5, 8, 15, 0) 60%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 44%,
+    rgba(0, 0, 0, 0.4) 62%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 44%,
+    rgba(0, 0, 0, 0.4) 62%,
+    rgba(0, 0, 0, 0) 80%
+  );
+}
+
+.city__layer {
+  position: absolute;
+  inset: 0;
+}

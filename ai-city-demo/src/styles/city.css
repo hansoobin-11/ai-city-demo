@@ -1,0 +1,271 @@
+/*
+ * 도시 화면 전경: 로고 · 히어로 · 핫스폿 · 미리보기 카드.
+ * 크기와 좌표는 `데모 시연 초안.html`의 인라인 style에서 옮겼다.
+ */
+
+/* ── 로고 ─────────────────────────────────────────── */
+.city__logo {
+  position: absolute;
+  left: 80px;
+  top: 56px;
+  height: 46px;
+  width: auto;
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.6));
+}
+
+/* ── 히어로 ───────────────────────────────────────── */
+.hero {
+  position: absolute;
+  left: 80px;
+  top: 150px;
+  width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font: 800 22px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-coral-soft);
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+
+.hero__rule {
+  width: 48px;
+  height: 4px;
+  background: var(--sb-coral);
+}
+
+.hero__title {
+  margin: 0;
+  font: 800 76px/1.16 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: -0.04em;
+  text-wrap: pretty;
+}
+
+.hero__zones {
+  margin: 0;
+  font: 700 23px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-shadow: 0 2px 16px rgba(5, 8, 15, 0.9);
+}
+
+.hero__summary {
+  margin: 0;
+  max-width: 700px;
+  font: 500 24px/1.55 Pretendard, system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 2px 16px rgba(5, 8, 15, 0.85);
+}
+
+/* ── 핫스폿 ───────────────────────────────────────── */
+.zone {
+  position: absolute;
+  left: var(--zone-x);
+  top: var(--zone-y);
+  pointer-events: auto;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.zone__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 핀과 카드 사이의 빈 구간. hover가 그 구간에서 끊기지 않게 잇는다. */
+.zone__bridge {
+  position: absolute;
+  width: 430px;
+  height: 30px;
+}
+
+.zone[data-card="below-left"] .zone__bridge,
+.zone[data-card="below-right"] .zone__bridge {
+  top: 52px;
+}
+.zone[data-card="below-left-inset"] .zone__bridge {
+  top: 56px;
+  left: 0;
+  width: 460px;
+}
+.zone[data-card="below-left"] .zone__bridge {
+  left: 0;
+}
+.zone[data-card="below-right"] .zone__bridge {
+  right: 0;
+}
+.zone[data-card="above-left"] .zone__bridge {
+  bottom: 52px;
+  left: 0;
+  height: 32px;
+}
+
+.zone__dot {
+  position: relative;
+  width: var(--zone-size);
+  height: var(--zone-size);
+  flex: none;
+  --zone-ping-inset: -8px;
+  --zone-core-inset: 21px;
+}
+
+.zone__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  transition: border-color 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zone__ping {
+  position: absolute;
+  inset: var(--zone-ping-inset);
+  border-radius: 50%;
+  border: 1px solid rgba(160, 225, 240, 0.7);
+  opacity: 0.4;
+  animation: sbPing 5.2s ease-out infinite;
+  transition: border-color 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zone__core {
+  position: absolute;
+  inset: var(--zone-core-inset);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
+  animation: sbBreath 4.5s ease-in-out infinite;
+}
+
+/* 활성 상태 강조용 코랄 글로우. */
+.zone__glow {
+  position: absolute;
+  inset: var(--zone-core-inset);
+  border-radius: 50%;
+  background: var(--sb-coral);
+  box-shadow: 0 0 26px rgba(230, 79, 61, 0.95);
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 핀별 sbPing 주기·지연은 원본 값을 유지한다. */
+.zone[data-zone="humanCare"] .zone__ping { animation-duration: 5.2s; animation-delay: 0s; }
+.zone[data-zone="safety"] .zone__ping { animation-duration: 6s; animation-delay: 1.1s; }
+.zone[data-zone="infrastructure"] .zone__ping { animation-duration: 5.6s; animation-delay: 2.4s; }
+.zone[data-zone="robotics"] .zone__ping { animation-duration: 6.4s; animation-delay: 3.2s; }
+.zone[data-zone="smartRoad"] .zone__ping { animation-duration: 5.8s; animation-delay: 0.6s; }
+
+.zone__pin {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zone__label {
+  font: 700 27px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 18px rgba(5, 8, 15, 0.9);
+  white-space: nowrap;
+  transition: color 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zone__chevron {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--sb-coral);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 15px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+/* ── 활성 상태 (hover 진행 중 · 터치 1탭 무장 · 자동 순환 강조) ──────── */
+.zone[data-active="true"] .zone__ring,
+.zone[data-active="true"] .zone__ping {
+  border-color: rgba(230, 79, 61, 0.9);
+}
+
+.zone[data-active="true"] .zone__glow {
+  opacity: 0.85;
+}
+
+.zone[data-active="true"] .zone__label {
+  color: var(--sb-coral-light);
+}
+
+.zone[data-active="true"] .zone__chevron {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.zone[data-active="true"] .zone__card {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
+/* ── 미리보기 카드 ────────────────────────────────── */
+/*
+ * 열림 연출: 모달처럼 흐릿하게 풀렸다가(blur) 자리 잡으며 선명해지는 느낌.
+ * opacity + blur + 살짝의 이동/스케일을 함께 전환한다.
+ */
+.zone__card {
+  position: absolute;
+  width: 430px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 28px;
+  background: var(--sb-surface);
+  border: 1px solid rgba(230, 79, 61, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+  z-index: 30;
+  --card-offset-y: 10px;
+  /* 기본은 숨김. 활성 상태는 아래 [data-active="true"] 규칙에서 연다. */
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(var(--card-offset-y)) scale(0.97);
+  transition:
+    opacity 0.6s ease,
+    filter 0.6s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.zone[data-card="below-left"] .zone__card { top: 78px; left: 0; }
+.zone[data-card="below-left-inset"] .zone__card { top: 84px; left: 18px; }
+.zone[data-card="below-right"] .zone__card { top: 78px; right: 0; }
+.zone[data-card="above-left"] .zone__card { bottom: 84px; left: 0; --card-offset-y: -10px; }
+
+.zone__card-eyebrow {
+  font: 700 16px/1 Pretendard, system-ui, sans-serif;
+  color: var(--sb-coral-soft);
+  letter-spacing: 0.18em;
+}
+
+.zone__card-title {
+  font: 800 32px/1.2 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text);
+  letter-spacing: -0.025em;
+}
+
+.zone__card-body {
+  font: 500 20px/1.5 Pretendard, system-ui, sans-serif;
+  color: var(--sb-text-muted);
+}
