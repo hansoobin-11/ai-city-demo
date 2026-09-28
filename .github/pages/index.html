@@ -93,7 +93,12 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 300px));
       gap: 24px;
+      align-items: start;
     }
+
+    .card-group { display: flex; flex-direction: column; }
+
+    .card { width: 100%; }
 
     .card {
       display: flex;
@@ -151,20 +156,37 @@
 
     .card[aria-expanded="true"] .arrow { transform: rotate(90deg); }
 
-    /* 4면 전시 세부 링크 */
+    /* 4면 전시 세부 링크 — 오른쪽 카드 바로 아래에서 펼쳐짐 */
     .screens {
+      position: relative;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      width: min(624px, 100%);
-      margin-top: 20px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-top: 0;
       overflow: hidden;
       max-height: 0;
       opacity: 0;
-      transition: max-height 0.3s ease, opacity 0.25s ease;
+      transform: translateY(-8px);
+      transition: max-height 0.3s ease, opacity 0.25s ease, transform 0.3s ease, padding-top 0.3s ease;
     }
 
-    .screens.open { max-height: 120px; opacity: 1; }
+    /* 카드와 버튼을 잇는 연결선 */
+    .screens::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 1px;
+      height: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.15));
+    }
+
+    .screens.open {
+      max-height: 200px;
+      opacity: 1;
+      transform: none;
+      padding-top: 14px;
+    }
 
     .screens a {
       display: flex;
@@ -200,8 +222,11 @@
     }
 
     .hint {
-      margin: 12px 0 0;
-      font-size: 13px;
+      margin: 10px 0 0;
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: left;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
       color: var(--text-dim);
       opacity: 0;
       transition: opacity 0.25s;
@@ -219,8 +244,6 @@
     @media (max-width: 680px) {
       header { padding: 20px 16px; }
       .cards { grid-template-columns: minmax(0, 1fr); width: 100%; max-width: 360px; }
-      .screens { grid-template-columns: repeat(2, 1fr); max-width: 360px; }
-      .screens.open { max-height: 220px; }
     }
   </style>
 </head>
@@ -242,21 +265,23 @@
         <span class="arrow" aria-hidden="true">→</span>
       </a>
 
-      <button class="card" type="button" aria-expanded="false" aria-controls="screens">
-        <span class="tag">EXHIBITION</span>
-        <span class="title">4면 전시 화면</span>
-        <span class="desc">Top · Left · Center · Right 화면을 각각 열어 확인</span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </button>
-    </div>
+      <div class="card-group">
+        <button class="card" type="button" aria-expanded="false" aria-controls="screens">
+          <span class="tag">EXHIBITION</span>
+          <span class="title">4면 전시 화면</span>
+          <span class="desc">Top · Left · Center · Right 화면을 각각 열어 확인</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
 
-    <nav class="screens" id="screens" aria-label="4면 전시 화면">
-      <a href="./exhibition/src/screens/top/" target="_blank" rel="noopener" tabindex="-1">Top<small>상단</small></a>
-      <a href="./exhibition/src/screens/left/" target="_blank" rel="noopener" tabindex="-1">Left<small>좌측</small></a>
-      <a href="./exhibition/src/screens/center/" target="_blank" rel="noopener" tabindex="-1">Center<small>중앙</small></a>
-      <a href="./exhibition/src/screens/right/" target="_blank" rel="noopener" tabindex="-1">Right<small>우측</small></a>
-    </nav>
-    <p class="hint">각 화면은 새 탭으로 열립니다. 같은 브라우저에서 열면 화면끼리 재생이 동기화됩니다.</p>
+        <nav class="screens" id="screens" aria-label="4면 전시 화면">
+          <a href="./exhibition/src/screens/top/" target="_blank" rel="noopener" tabindex="-1">Top<small>상단</small></a>
+          <a href="./exhibition/src/screens/left/" target="_blank" rel="noopener" tabindex="-1">Left<small>좌측</small></a>
+          <a href="./exhibition/src/screens/center/" target="_blank" rel="noopener" tabindex="-1">Center<small>중앙</small></a>
+          <a href="./exhibition/src/screens/right/" target="_blank" rel="noopener" tabindex="-1">Right<small>우측</small></a>
+        </nav>
+        <p class="hint">새 탭으로 열립니다. 같은 브라우저에서 열면 재생이 동기화됩니다.</p>
+      </div>
+    </div>
   </main>
 
   <footer>© SPACEBANK</footer>
