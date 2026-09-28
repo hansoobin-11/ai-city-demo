@@ -114,7 +114,7 @@ export function createCityScreen(): HTMLElement {
 
   const logo = document.createElement("img");
   logo.className = "city__logo";
-  logo.src = "/assets/logo.png";
+  logo.src = "./assets/logo.png";
   logo.alt = "스페이스뱅크";
   logo.decoding = "async";
 

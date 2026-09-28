@@ -32,27 +32,27 @@ export const solutions: Record<SolutionId, SolutionContent> = {
     // 메인 미리보기 스와이퍼(미디어 박스, 항상 노출). 출처: 사용자 제공 화면 캡처
     // (낙상 센서 / 대시보드 / 수면 보고서 / 호흡심박 센서).
     images: [
-      { src: "/assets/humancare/images/1.png", label: "낙상 센서" },
-      { src: "/assets/humancare/images/2.png", label: "대시보드" },
-      { src: "/assets/humancare/images/3.png", label: "수면 보고서" },
-      { src: "/assets/humancare/images/4.png", label: "호흡심박 센서" },
+      { src: "./assets/humancare/images/1.png", label: "낙상 센서" },
+      { src: "./assets/humancare/images/2.png", label: "대시보드" },
+      { src: "./assets/humancare/images/3.png", label: "수면 보고서" },
+      { src: "./assets/humancare/images/4.png", label: "호흡심박 센서" },
     ],
     // "소개 자료 보기" 버튼 → 모달. 출처: 사용자 제공 소개 자료 14장.
     introSlides: [
-      "/assets/humancare/introduction/01.png",
-      "/assets/humancare/introduction/02.png",
-      "/assets/humancare/introduction/03.png",
-      "/assets/humancare/introduction/04.png",
-      "/assets/humancare/introduction/05.png",
-      "/assets/humancare/introduction/06.png",
-      "/assets/humancare/introduction/07.png",
-      "/assets/humancare/introduction/08.png",
-      "/assets/humancare/introduction/09.png",
-      "/assets/humancare/introduction/10.png",
-      "/assets/humancare/introduction/11.png",
-      "/assets/humancare/introduction/12.png",
-      "/assets/humancare/introduction/13.png",
-      "/assets/humancare/introduction/14.png",
+      "./assets/humancare/introduction/01.png",
+      "./assets/humancare/introduction/02.png",
+      "./assets/humancare/introduction/03.png",
+      "./assets/humancare/introduction/04.png",
+      "./assets/humancare/introduction/05.png",
+      "./assets/humancare/introduction/06.png",
+      "./assets/humancare/introduction/07.png",
+      "./assets/humancare/introduction/08.png",
+      "./assets/humancare/introduction/09.png",
+      "./assets/humancare/introduction/10.png",
+      "./assets/humancare/introduction/11.png",
+      "./assets/humancare/introduction/12.png",
+      "./assets/humancare/introduction/13.png",
+      "./assets/humancare/introduction/14.png",
     ],
     // "데모 보기" 버튼 → 새 탭. 출처: 사용자 제공.
     demoUrl:
@@ -85,23 +85,23 @@ export const solutions: Record<SolutionId, SolutionContent> = {
     // 메인 미리보기 스와이퍼(미디어 박스, 항상 노출). 출처: 사용자 제공 화면 캡처
     // (대시보드 / 재난통계 / 재해 시뮬레이션 / 폭염정보).
     images: [
-      { src: "/assets/safety/images/1.png", label: "대시보드" },
-      { src: "/assets/safety/images/2.png", label: "재난통계" },
-      { src: "/assets/safety/images/3.png", label: "재해 시뮬레이션" },
-      { src: "/assets/safety/images/4.png", label: "폭염정보" },
+      { src: "./assets/safety/images/1.png", label: "대시보드" },
+      { src: "./assets/safety/images/2.png", label: "재난통계" },
+      { src: "./assets/safety/images/3.png", label: "재해 시뮬레이션" },
+      { src: "./assets/safety/images/4.png", label: "폭염정보" },
     ],
     // "소개 자료 보기" 버튼 → 모달. 출처: 사용자 제공 소개 자료 10장.
     introSlides: [
-      "/assets/safety/introduction/01.png",
-      "/assets/safety/introduction/02.png",
-      "/assets/safety/introduction/03.png",
-      "/assets/safety/introduction/04.png",
-      "/assets/safety/introduction/05.png",
-      "/assets/safety/introduction/06.png",
-      "/assets/safety/introduction/07.png",
-      "/assets/safety/introduction/08.png",
-      "/assets/safety/introduction/09.png",
-      "/assets/safety/introduction/10.png",
+      "./assets/safety/introduction/01.png",
+      "./assets/safety/introduction/02.png",
+      "./assets/safety/introduction/03.png",
+      "./assets/safety/introduction/04.png",
+      "./assets/safety/introduction/05.png",
+      "./assets/safety/introduction/06.png",
+      "./assets/safety/introduction/07.png",
+      "./assets/safety/introduction/08.png",
+      "./assets/safety/introduction/09.png",
+      "./assets/safety/introduction/10.png",
     ],
   },
   infrastructure: {
@@ -131,22 +131,22 @@ export const solutions: Record<SolutionId, SolutionContent> = {
     // 메인 미리보기 스와이퍼(미디어 박스, 항상 노출). 출처: 사용자 제공 화면 캡처
     // (AI 패턴 탐지 / 대시보드 / 알림기록 / 차트분석).
     images: [
-      { src: "/assets/infrastructure/images/1.png", label: "AI 패턴 탐지" },
-      { src: "/assets/infrastructure/images/2.png", label: "대시보드" },
-      { src: "/assets/infrastructure/images/3.png", label: "알림기록" },
-      { src: "/assets/infrastructure/images/4.png", label: "차트분석" },
+      { src: "./assets/infrastructure/images/1.png", label: "AI 패턴 탐지" },
+      { src: "./assets/infrastructure/images/2.png", label: "대시보드" },
+      { src: "./assets/infrastructure/images/3.png", label: "알림기록" },
+      { src: "./assets/infrastructure/images/4.png", label: "차트분석" },
     ],
     // "소개 자료 보기" 버튼 → 모달. 출처: 사용자 제공 소개 자료 6장.
     introSlides: [
-      "/assets/infrastructure/introduction/01.png",
-      "/assets/infrastructure/introduction/02.png",
-      "/assets/infrastructure/introduction/03.png",
-      "/assets/infrastructure/introduction/04.png",
-      "/assets/infrastructure/introduction/05.png",
-      "/assets/infrastructure/introduction/06.png",
+      "./assets/infrastructure/introduction/01.png",
+      "./assets/infrastructure/introduction/02.png",
+      "./assets/infrastructure/introduction/03.png",
+      "./assets/infrastructure/introduction/04.png",
+      "./assets/infrastructure/introduction/05.png",
+      "./assets/infrastructure/introduction/06.png",
     ],
     // "홍보 영상 보기" 버튼 → 모달. 출처: 유전자원_demo.mp4(사용자 제공).
-    videoSrc: "/assets/infrastructure/video/video.mp4",
+    videoSrc: "./assets/infrastructure/video/video.mp4",
   },
   robotics: {
     id: "robotics",
@@ -175,31 +175,31 @@ export const solutions: Record<SolutionId, SolutionContent> = {
     // 메인 미리보기 스와이퍼(미디어 박스, 항상 노출). 출처: RoboViewX 실제 화면
     // 캡처(사용자 제공). 통합 관제 대시보드 / 웨이포인트 등록 / 경로 편집 / 스케줄링.
     images: [
-      { src: "/assets/robotics/images/1.png", label: "통합 관제 대시보드" },
-      { src: "/assets/robotics/images/2.png", label: "웨이포인트 등록" },
-      { src: "/assets/robotics/images/3.png", label: "경로 편집" },
-      { src: "/assets/robotics/images/4.png", label: "스케줄링" },
+      { src: "./assets/robotics/images/1.png", label: "통합 관제 대시보드" },
+      { src: "./assets/robotics/images/2.png", label: "웨이포인트 등록" },
+      { src: "./assets/robotics/images/3.png", label: "경로 편집" },
+      { src: "./assets/robotics/images/4.png", label: "스케줄링" },
     ],
     // "소개 자료 보기" 버튼 → 모달. 출처: RoboViewX 소개 PPT.pdf 18장 중 12장.
     // 통신 설계·GNSS/SLAM 등 엔지니어링 상세(04 ARCHITECTURE, 05 TECHNOLOGY
     // 일부)는 관람객 대상이 아니라서 제외.
     introSlides: [
-      "/assets/robotics/introduction/01.png",
-      "/assets/robotics/introduction/02.png",
-      "/assets/robotics/introduction/03.png",
-      "/assets/robotics/introduction/04.png",
-      "/assets/robotics/introduction/05.png",
-      "/assets/robotics/introduction/06.png",
-      "/assets/robotics/introduction/07.png",
-      "/assets/robotics/introduction/08.png",
-      "/assets/robotics/introduction/09.png",
-      "/assets/robotics/introduction/10.png",
-      "/assets/robotics/introduction/11.png",
-      "/assets/robotics/introduction/12.png",
+      "./assets/robotics/introduction/01.png",
+      "./assets/robotics/introduction/02.png",
+      "./assets/robotics/introduction/03.png",
+      "./assets/robotics/introduction/04.png",
+      "./assets/robotics/introduction/05.png",
+      "./assets/robotics/introduction/06.png",
+      "./assets/robotics/introduction/07.png",
+      "./assets/robotics/introduction/08.png",
+      "./assets/robotics/introduction/09.png",
+      "./assets/robotics/introduction/10.png",
+      "./assets/robotics/introduction/11.png",
+      "./assets/robotics/introduction/12.png",
     ],
     // "홍보 영상 보기" 버튼 → 모달. 출처: RoboViewX_v2.mp4(사용자 제공, 솔루션
     // 소개 자료 원본과 동일 파일, 70MB — 로컬 서빙이라 압축하지 않음.
-    videoSrc: "/assets/robotics/video/RoboViewX.mp4",
+    videoSrc: "./assets/robotics/video/RoboViewX.mp4",
     // "데모 보기" 버튼 → 새 탭. 출처: 사용자 제공.
     demoUrl: "https://roboviewx.raiid.ai/",
   },
@@ -230,18 +230,18 @@ export const solutions: Record<SolutionId, SolutionContent> = {
     // 메인 미리보기 스와이퍼(미디어 박스, 항상 노출). 출처: 사용자 제공 화면 캡처
     // (대시보드 1 / 대시보드 2).
     images: [
-      { src: "/assets/smart-road/images/1.png", label: "대시보드" },
-      { src: "/assets/smart-road/images/2.png", label: "대시보드" },
+      { src: "./assets/smart-road/images/1.png", label: "대시보드" },
+      { src: "./assets/smart-road/images/2.png", label: "대시보드" },
     ],
     // "소개 자료 보기" 버튼 → 모달. 출처: 사용자 제공 소개 자료 7장.
     introSlides: [
-      "/assets/smart-road/introduction/01.png",
-      "/assets/smart-road/introduction/02.png",
-      "/assets/smart-road/introduction/03.png",
-      "/assets/smart-road/introduction/04.png",
-      "/assets/smart-road/introduction/05.png",
-      "/assets/smart-road/introduction/06.png",
-      "/assets/smart-road/introduction/07.png",
+      "./assets/smart-road/introduction/01.png",
+      "./assets/smart-road/introduction/02.png",
+      "./assets/smart-road/introduction/03.png",
+      "./assets/smart-road/introduction/04.png",
+      "./assets/smart-road/introduction/05.png",
+      "./assets/smart-road/introduction/06.png",
+      "./assets/smart-road/introduction/07.png",
     ],
   },
 };

@@ -206,7 +206,7 @@ export function createDetailScreen(onBack: () => void): DetailScreenHandle {
 
   const logo = document.createElement("img");
   logo.className = "detail__logo";
-  logo.src = "/assets/logo.png";
+  logo.src = "./assets/logo.png";
   logo.alt = "스페이스뱅크";
   logo.decoding = "async";
 
