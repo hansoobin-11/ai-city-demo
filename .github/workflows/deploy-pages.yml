@@ -38,7 +38,7 @@ jobs:
           cp -r ai-city-demo/dist/. _site/demo/
           # exhibition-ui는 빌드 없는 정적 파일 — 런타임에 필요한 src/, public/만 복사
           cp -r spacebank-ai-city-exhibition-ui/src spacebank-ai-city-exhibition-ui/public _site/exhibition/
-          cp .github/pages/index.html _site/index.html
+          cp -r .github/pages/. _site/
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5

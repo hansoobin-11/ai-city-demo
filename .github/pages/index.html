@@ -3,22 +3,302 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI CITY Demo</title>
+  <title>SPACEBANK AI CITY</title>
+  <link rel="icon" href="./demo/assets/logo.png">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 48px auto; padding: 0 16px; line-height: 1.6; }
-    h2 { margin-top: 32px; }
+    @font-face {
+      font-family: "Pretendard";
+      src: url("./exhibition/public/assets/fonts/pretendard-variable.woff2") format("woff2-variations");
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    :root {
+      --brand: #db5040;
+      --brand-light: #ff8574;
+      --text: #f4f7fb;
+      --text-dim: rgba(244, 247, 251, 0.72);
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-hover: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; margin: 0; }
+
+    body {
+      font-family: "Pretendard", system-ui, sans-serif;
+      color: var(--text);
+      background: #0b1426 url("./bg.webp") center / cover no-repeat fixed;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 배경 위 가독성용 어두운 그라데이션 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(8, 14, 30, 0.78) 0%, rgba(8, 14, 30, 0.35) 45%, rgba(8, 14, 30, 0.80) 100%);
+      z-index: -1;
+    }
+
+    header { padding: 28px 40px; }
+
+    header img {
+      height: 36px;
+      filter: brightness(0) invert(1);
+      display: block;
+    }
+
+    main, .card .desc { word-break: keep-all; }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 64px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--brand);
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      font-size: 14px;
+      margin: 0 0 12px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0 0 12px;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+      word-break: keep-all;
+    }
+
+    .lead {
+      color: var(--text-dim);
+      font-size: clamp(15px, 1.6vw, 18px);
+      margin: 0 0 48px;
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 300px));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card-group { display: flex; flex-direction: column; }
+
+    .card { width: 100%; }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 28px 28px 24px;
+      min-height: 170px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(3px) saturate(120%);
+      -webkit-backdrop-filter: blur(3px) saturate(120%);
+      /* 유리 가장자리 반사광 */
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 1px 0 0 rgba(255, 255, 255, 0.15);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover,
+    .card:focus-visible,
+    .card[aria-expanded="true"] {
+      background: var(--glass-hover);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .card .tag {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--brand-light);
+    }
+
+    .card .title { font-size: 24px; font-weight: 700; }
+
+    .card .desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .card .arrow {
+      margin-top: auto;
+      align-self: flex-end;
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+
+    .card[aria-expanded="true"] .arrow { transform: rotate(90deg); }
+
+    /* 4면 전시 세부 링크 — 오른쪽 카드 바로 아래에서 펼쳐짐 */
+    .screens {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-top: 0;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: max-height 0.3s ease, opacity 0.25s ease, transform 0.3s ease, padding-top 0.3s ease;
+    }
+
+    /* 카드와 버튼을 잇는 연결선 */
+    .screens::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 1px;
+      height: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.15));
+    }
+
+    .screens.open {
+      max-height: 200px;
+      opacity: 1;
+      transform: none;
+      padding-top: 14px;
+    }
+
+    .screens a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 14px 8px;
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .screens a small {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .screens a:hover,
+    .screens a:focus-visible {
+      background: var(--glass-hover);
+      border-color: rgba(255, 255, 255, 0.5);
+      outline: none;
+    }
+
+    .hint {
+      margin: 10px 0 0;
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: left;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .screens.open + .hint { opacity: 1; }
+
+    footer {
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(244, 247, 251, 0.5);
+    }
+
+    @media (max-width: 680px) {
+      header { padding: 20px 16px; }
+      .cards { grid-template-columns: minmax(0, 1fr); width: 100%; max-width: 360px; }
+    }
   </style>
 </head>
 <body>
-  <h1>SPACEBANK AI CITY</h1>
-  <h2>ai-city-demo</h2>
-  <ul><li><a href="./demo/">터치 데모</a></li></ul>
-  <h2>exhibition-ui</h2>
-  <ul>
-    <li><a href="./exhibition/src/screens/top/">Top</a></li>
-    <li><a href="./exhibition/src/screens/left/">Left</a></li>
-    <li><a href="./exhibition/src/screens/center/">Center</a></li>
-    <li><a href="./exhibition/src/screens/right/">Right</a></li>
-  </ul>
+  <header>
+    <img src="./demo/assets/logo.png" alt="spacebank">
+  </header>
+
+  <main>
+    <p class="eyebrow">SPACEBANK AI CITY</p>
+    <h1>AI가 도시를 보고,<br>이해하고, 움직입니다.</h1>
+    <p class="lead">2026 도시지역혁신 산업박람회 전시 콘텐츠</p>
+
+    <div class="cards">
+      <a class="card" href="./demo/">
+        <span class="tag">INTERACTIVE</span>
+        <span class="title">터치 데모</span>
+        <span class="desc">도시 구역별 AI 솔루션을 직접 눌러보는 키오스크 데모</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <div class="card-group">
+        <button class="card" type="button" aria-expanded="false" aria-controls="screens">
+          <span class="tag">EXHIBITION</span>
+          <span class="title">4면 전시 화면</span>
+          <span class="desc">Top · Left · Center · Right 화면을 각각 열어 확인</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+
+        <nav class="screens" id="screens" aria-label="4면 전시 화면">
+          <a href="./exhibition/src/screens/top/" target="_blank" rel="noopener" tabindex="-1">Top<small>상단</small></a>
+          <a href="./exhibition/src/screens/left/" target="_blank" rel="noopener" tabindex="-1">Left<small>좌측</small></a>
+          <a href="./exhibition/src/screens/center/" target="_blank" rel="noopener" tabindex="-1">Center<small>중앙</small></a>
+          <a href="./exhibition/src/screens/right/" target="_blank" rel="noopener" tabindex="-1">Right<small>우측</small></a>
+        </nav>
+        <p class="hint">새 탭으로 열립니다. 같은 브라우저에서 열면 재생이 동기화됩니다.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>© SPACEBANK</footer>
+
+  <script>
+    (function () {
+      var toggle = document.querySelector('button.card');
+      var panel = document.getElementById('screens');
+      var links = panel.querySelectorAll('a');
+
+      toggle.addEventListener('click', function () {
+        var open = toggle.getAttribute('aria-expanded') !== 'true';
+        toggle.setAttribute('aria-expanded', String(open));
+        panel.classList.toggle('open', open);
+        links.forEach(function (a) { a.tabIndex = open ? 0 : -1; });
+      });
+    })();
+  </script>
 </body>
 </html>
