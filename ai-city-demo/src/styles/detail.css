@@ -193,8 +193,7 @@
   top: 20px;
   padding: 8px 16px;
   border-radius: 999px;
-  background: rgba(5, 8, 15, 0.72);
-  backdrop-filter: blur(6px);
+  background: rgba(5, 8, 15, 0.85);
   color: var(--sb-text);
   font: 700 16px/1 Pretendard, system-ui, sans-serif;
   letter-spacing: -0.01em;

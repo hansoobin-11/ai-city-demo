@@ -48,13 +48,13 @@
 .stage__photo {
   position: absolute;
   inset: 0;
-  background-image: url("/assets/city.png");
+  background-image: url("/assets/city.jpg");
   background-size: cover;
   background-position: center;
   transform: scale(1.02);
   transform-origin: 50% 52%;
-  filter: brightness(var(--sb-night-bright)) saturate(var(--sb-night-sat))
-    contrast(var(--sb-night-contrast));
+  /* 야간 보정(saturate 1.02)은 city.jpg에 미리 반영했다. 확대 전환 중 CSS
+     filter를 매 프레임 다시 계산하면 구형 iPad에서 버벅여서 뺐다. */
   transition: transform 0.85s cubic-bezier(0.42, 0, 0.22, 1);
 }
 

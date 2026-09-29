@@ -67,6 +67,8 @@ function createSwiper(): SwiperHandle {
   let slideCount = 0;
   let slideIndex = 0;
   let slideLabels: (string | undefined)[] = [];
+  let slideImages: HTMLImageElement[] = [];
+  let slideSrcs: string[] = [];
   let dragStartX = 0;
   let dragDx = 0;
   let dragging = false;
@@ -93,11 +95,25 @@ function createSwiper(): SwiperHandle {
     }
   }
 
+  /**
+   * 현재 장과 앞뒤 한 장만 이미지를 불러온다. 소개 자료는 1920px 슬라이드가
+   * 10장 넘게 있어 한꺼번에 불러오면 메모리가 작은 구형 iPad에서 느려지거나
+   * Safari가 페이지를 새로 고친다. 한 번 불러온 장은 그대로 둔다.
+   */
+  function loadNearbySlides() {
+    for (const offset of [0, 1, -1]) {
+      const i = (((slideIndex + offset) % slideCount) + slideCount) % slideCount;
+      const img = slideImages[i];
+      if (img && !img.getAttribute("src")) img.src = slideSrcs[i];
+    }
+  }
+
   /** 인덱스를 슬라이드 개수로 모듈러 연산해 양방향 무한 루프로 이동한다. */
   function goToSlide(index: number) {
     if (slideCount === 0) return;
     slideIndex = ((index % slideCount) + slideCount) % slideCount;
     dragDx = 0;
+    loadNearbySlides();
     applyTrackPosition(true);
     updateDots();
     updateLabel();
@@ -110,13 +126,15 @@ function createSwiper(): SwiperHandle {
     slideIndex = 0;
     dragDx = 0;
     slideLabels = images.map((item) => item.label);
+    slideSrcs = images.map((item) => item.src);
+    slideImages = [];
 
     images.forEach((item, i) => {
       const slide = div("detail__swiper-slide");
       const img = document.createElement("img");
-      img.src = item.src;
       img.alt = "";
       img.decoding = "async";
+      slideImages.push(img);
       slide.append(img);
       track.append(slide);
 
@@ -129,6 +147,7 @@ function createSwiper(): SwiperHandle {
     });
 
     dots.hidden = images.length < 2;
+    if (slideCount > 0) loadNearbySlides();
     applyTrackPosition(false);
     updateDots();
     updateLabel();

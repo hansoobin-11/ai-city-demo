@@ -66,32 +66,37 @@ const TRAVELLING_DOTS: ReadonlyArray<readonly [number, string, string, string, s
   [2.8, "#FFB9AC", "pD", "8s", "3.1s"],
 ];
 
+/** 창문·가로등·데이터 점 둘레의 번짐을 흉내 내는 원 반지름 배율. */
+const HALO_SCALE = 2.8;
+/** 데이터 라인 번짐용으로 뒤에 깔리는 굵은 선의 배율·투명도. */
+const LINE_GLOW_WIDTH = 3.5;
+const LINE_GLOW_OPACITY = 0.22;
+
+/**
+ * 색마다 가운데가 진하고 바깥이 투명해지는 방사형 그라데이션.
+ * 예전에는 feGaussianBlur 필터로 번짐을 만들었지만, WebKit(iPad Safari)은 SVG
+ * 필터를 CPU로 매 프레임 다시 계산해 구형 iPad에서 화면이 크게 느려졌다.
+ * 그라데이션 원은 한 번 그리면 끝이라 훨씬 가볍고, 보이는 모양은 거의 같다.
+ */
+const HALO_COLORS: Record<string, string> = {
+  sbHaloWarm: "#FFD9A6",
+  sbHaloCool: "#CDE4FF",
+  sbHaloCoral: "#FFB9AC",
+  sbHaloCyan: "#9FEDF6",
+};
+
 function buildDefs(): SVGDefsElement {
   const defs = el("defs");
 
-  const glow = el("filter", {
-    id: "sbGlow", x: "-200%", y: "-200%", width: "500%", height: "500%",
-  });
-  glow.append(
-    el("feGaussianBlur", { stdDeviation: 3.4, result: "b" }),
-    (() => {
-      const merge = el("feMerge");
-      merge.append(el("feMergeNode", { in: "b" }), el("feMergeNode", { in: "SourceGraphic" }));
-      return merge;
-    })(),
-  );
-
-  const lineGlow = el("filter", {
-    id: "sbLineGlow", x: "-50%", y: "-50%", width: "200%", height: "200%",
-  });
-  lineGlow.append(
-    el("feGaussianBlur", { stdDeviation: 2.6, result: "b" }),
-    (() => {
-      const merge = el("feMerge");
-      merge.append(el("feMergeNode", { in: "b" }), el("feMergeNode", { in: "SourceGraphic" }));
-      return merge;
-    })(),
-  );
+  for (const [id, color] of Object.entries(HALO_COLORS)) {
+    const halo = el("radialGradient", { id });
+    halo.append(
+      el("stop", { offset: 0, "stop-color": color, "stop-opacity": 0.55 }),
+      el("stop", { offset: 0.45, "stop-color": color, "stop-opacity": 0.18 }),
+      el("stop", { offset: 1, "stop-color": color, "stop-opacity": 0 }),
+    );
+    defs.append(halo);
+  }
 
   const coralCyan = el("linearGradient", { id: "sbCoralCyan", x1: 0, y1: 0, x2: 1, y2: 0 });
   coralCyan.append(
@@ -106,8 +111,39 @@ function buildDefs(): SVGDefsElement {
     el("stop", { offset: 1, "stop-color": "#E64F3D", "stop-opacity": 0.85 }),
   );
 
-  defs.append(glow, lineGlow, coralCyan, cyanCoral);
+  defs.append(coralCyan, cyanCoral);
   return defs;
+}
+
+/** 번짐 원 + 선명한 점을 한 그룹으로 만든다. */
+function glowingLights(
+  points: ReadonlyArray<readonly [number, number, number]>,
+  fill: string,
+  haloId: string,
+  opacity: number,
+): SVGGElement {
+  const group = el("g", { opacity });
+  const halos = el("g", { fill: `url(#${haloId})` });
+  const cores = el("g", { fill });
+  for (const [cx, cy, r] of points) {
+    halos.append(el("circle", { cx, cy, r: r * HALO_SCALE }));
+    cores.append(el("circle", { cx, cy, r }));
+  }
+  group.append(halos, cores);
+  return group;
+}
+
+function lineAttrs(line: DataLine, glow: boolean): Attrs {
+  const attrs: Attrs = {
+    d: line.d,
+    stroke: line.stroke,
+    "stroke-width": glow ? line.strokeWidth * LINE_GLOW_WIDTH : line.strokeWidth,
+  };
+  const opacity = line.strokeOpacity ?? 1;
+  if (glow) attrs["stroke-opacity"] = opacity * LINE_GLOW_OPACITY;
+  else if (line.strokeOpacity !== undefined) attrs["stroke-opacity"] = line.strokeOpacity;
+  if (!glow && line.id) attrs.id = line.id;
+  return attrs;
 }
 
 export function createCityOverlay(): SVGSVGElement {
@@ -121,41 +157,28 @@ export function createCityOverlay(): SVGSVGElement {
 
   svg.append(buildDefs());
 
-  // 건물 창문
-  const windows = el("g", { filter: "url(#sbGlow)", fill: "#FFD9A6", opacity: 0.95 });
-  for (const [cx, cy, r] of BUILDING_WINDOWS) {
-    windows.append(el("circle", { cx, cy, r }));
-  }
+  // 건물 창문 · 가로등/도로 조명
+  const windows = glowingLights(BUILDING_WINDOWS, "#FFD9A6", "sbHaloWarm", 0.95);
+  const street = glowingLights(STREET_LIGHTS, "#CDE4FF", "sbHaloCool", 0.9);
 
-  // 가로등 · 도로 조명
-  const street = el("g", { filter: "url(#sbGlow)", fill: "#CDE4FF", opacity: 0.9 });
-  for (const [cx, cy, r] of STREET_LIGHTS) {
-    street.append(el("circle", { cx, cy, r }));
-  }
+  // 데이터 라인: 굵고 옅은 선(번짐) 위에 원래 선을 겹친다.
+  const lines = el("g", { fill: "none", "stroke-linecap": "round", opacity: 0.9 });
+  for (const line of DATA_LINES) lines.append(el("path", lineAttrs(line, true)));
+  for (const line of DATA_LINES) lines.append(el("path", lineAttrs(line, false)));
 
-  // 데이터 라인
-  const lines = el("g", {
-    fill: "none", "stroke-linecap": "round", filter: "url(#sbLineGlow)", opacity: 0.9,
-  });
-  for (const line of DATA_LINES) {
-    const attrs: Attrs = {
-      d: line.d,
-      stroke: line.stroke,
-      "stroke-width": line.strokeWidth,
-    };
-    if (line.id) attrs.id = line.id;
-    if (line.strokeOpacity !== undefined) attrs["stroke-opacity"] = line.strokeOpacity;
-    lines.append(el("path", attrs));
-  }
-
-  // 라인을 따라 도는 데이터 점
-  const dots = el("g", { filter: "url(#sbLineGlow)", opacity: 0.9 });
+  // 라인을 따라 도는 데이터 점 (번짐 원과 점이 같은 경로로 함께 움직인다)
+  const dots = el("g", { opacity: 0.9 });
   for (const [r, fill, pathId, dur, begin] of TRAVELLING_DOTS) {
-    const circle = el("circle", { r, fill });
+    const haloId = fill === "#FFB9AC" ? "sbHaloCoral" : "sbHaloCyan";
+    const dot = el("g");
+    dot.append(
+      el("circle", { r: r * HALO_SCALE, fill: `url(#${haloId})` }),
+      el("circle", { r, fill }),
+    );
     const motion = el("animateMotion", { dur, begin, repeatCount: "indefinite" });
     motion.append(el("mpath", { href: `#${pathId}` }));
-    circle.append(motion);
-    dots.append(circle);
+    dot.append(motion);
+    dots.append(dot);
   }
 
   svg.append(windows, street, lines, dots);
