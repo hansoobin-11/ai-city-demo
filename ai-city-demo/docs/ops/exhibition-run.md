@@ -16,7 +16,7 @@
 dist/
 ├── index.html
 ├── assets/
-│   ├── city.png                    도시 배경
+│   ├── city.jpg                    도시 배경
 │   ├── logo.png                    스페이스뱅크 로고
 │   ├── index-*.css                 화면 스타일
 │   └── index-*.js                  화면 구성 코드

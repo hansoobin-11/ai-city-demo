@@ -194,7 +194,7 @@
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-/* ── 활성 상태 (hover 진행 중 · 터치 1탭 무장 · 자동 순환 강조) ──────── */
+/* ── 활성 상태 (hover 진행 중 · 터치 1탭 무장) ──────── */
 .zone[data-active="true"] .zone__ring,
 .zone[data-active="true"] .zone__ping {
   border-color: rgba(230, 79, 61, 0.9);
@@ -215,14 +215,15 @@
 
 .zone[data-active="true"] .zone__card {
   opacity: 1;
-  filter: blur(0);
   transform: translateY(0) scale(1);
 }
 
 /* ── 미리보기 카드 ────────────────────────────────── */
 /*
- * 열림 연출: 모달처럼 흐릿하게 풀렸다가(blur) 자리 잡으며 선명해지는 느낌.
- * opacity + blur + 살짝의 이동/스케일을 함께 전환한다.
+ * 열림 연출: opacity + 살짝의 이동/스케일.
+ * filter: blur 전환과 backdrop-filter는 쓰지 않는다 — iPad Safari(WebKit)에서
+ * 둘이 겹치면 카드가 흐린 상태로 굳어 버리고, 구형 iPad에서는 매우 무겁다.
+ * 배경(--sb-surface)이 0.92로 거의 불투명해 backdrop-filter 없이도 모양은 같다.
  */
 .zone__card {
   position: absolute;
@@ -235,16 +236,13 @@
   border: 1px solid rgba(230, 79, 61, 0.5);
   border-radius: 20px;
   box-shadow: 0 22px 54px rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(12px);
   z-index: 30;
   --card-offset-y: 10px;
   /* 기본은 숨김. 활성 상태는 아래 [data-active="true"] 규칙에서 연다. */
   opacity: 0;
-  filter: blur(6px);
   transform: translateY(var(--card-offset-y)) scale(0.97);
   transition:
-    opacity 0.6s ease,
-    filter 0.6s ease,
+    opacity 0.45s ease,
     transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 

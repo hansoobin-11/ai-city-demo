@@ -28,10 +28,7 @@
   --sb-text-muted: rgba(255, 255, 255, 0.8);
   --sb-text-dim: rgba(255, 255, 255, 0.6);
 
-  /* 야간 상태 배경 필터 (원본 tods[3]) */
-  --sb-night-bright: 1;
-  --sb-night-sat: 1.02;
-  --sb-night-contrast: 1;
+  /* 야간 상태 배경 틴트 (원본 tods[3]) */
   --sb-night-tint: rgba(120, 160, 255, 0.08);
 
   font-family: Pretendard, "Noto Sans KR", system-ui, sans-serif;
